@@ -17,7 +17,13 @@ describe('Orange HRM Tests', () => {
     otherIdField: ':nth-child(3) > :nth-child(1) > :nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-input',
     driverLicenseField: ':nth-child(2) > :nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-input',
     licenseExpireDateField: ':nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-input',
-    dateCloseButton: '.--close'
+    dateCloseButton: '.--close',
+    nationalityButton: ':nth-child(5) > :nth-child(1) > :nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon',
+    maritalStatusButton: ':nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon',
+    firstSaveButton: ':nth-child(1) > .oxd-form > .oxd-form-actions > .oxd-button',
+    dateBirth: ':nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-input',
+    genderSelector: ':nth-child(2) > :nth-child(2) > .oxd-radio-wrapper > label > .oxd-radio-input',
+    
   }
 
   it.only('User Info Update - Success', () => {
@@ -36,7 +42,14 @@ describe('Orange HRM Tests', () => {
     cy.get(selectorsList.driverLicenseField).clear().type('384125')
     cy.get(selectorsList.licenseExpireDateField).clear().type('2031-10-03')
     cy.get(selectorsList.dateCloseButton).click()
-    cy.get(':nth-child(1) > .oxd-form > .oxd-form-actions > .oxd-button').click()
+    cy.get(selectorsList.nationalityButton).click()
+    cy.get(':nth-child(27) > span').click()
+    cy.get(selectorsList.maritalStatusButton).click()
+    cy.get('.oxd-select-dropdown > :nth-child(3)').click()
+    cy.get(selectorsList.dateBirth).clear().type('1994-19-10')
+    cy.get(selectorsList.dateCloseButton).click()
+    cy.get(selectorsList.genderSelector).click()
+    cy.get(selectorsList.firstSaveButton).click({force: true})
     cy.get('body').should('contain', 'Successfully Updated')
     cy.get('.oxd-toast-close')
 
