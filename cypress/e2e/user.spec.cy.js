@@ -1,64 +1,33 @@
 import userData from '../fixtures/user-data.json'
+import LoginPage from '../pages/loginPage.js'
+import DashboardPage from '../pages/dashboardPage.js'
+import MenuPage from '../pages/menuPage.js'
+import MyInfoPage from '../pages/myInfoPage.js'
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menuPage = new MenuPage()
+const myInfoPage = new MyInfoPage()
 
 describe('Orange HRM Tests', () => {
 
-  const selectorsList = {
-    usernameField: '[name="username"]',
-    passwordField: '[name="password"]',
-    loginButton: '.oxd-button',
-    sectionTitleTopBar: '.oxd-topbar-header-breadcrumb > .oxd-text',
-    dashboardGrid: '.oxd-layout-context',
-    wrongCredentialAlert: '.oxd-alert',
-    myInfoButton: ':nth-child(6) > .oxd-main-menu-item > .oxd-text',
-    firstNameField: '[name="firstName"]',
-    middleNameField: '[name="middleName"]',
-    lastNameField: '[name="lastName"]',
-    employeeIdField: ':nth-child(1) > :nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-input',
-    otherIdField: ':nth-child(3) > :nth-child(1) > :nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-input',
-    driverLicenseField: ':nth-child(2) > :nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-input',
-    licenseExpireDateField: ':nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-input',
-    dateCloseButton: '.--close',
-    nationalityButton: ':nth-child(5) > :nth-child(1) > :nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon',
-    maritalStatusButton: ':nth-child(2) > .oxd-input-group > :nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon',
-    firstSaveButton: ':nth-child(1) > .oxd-form > .oxd-form-actions > .oxd-button',
-    dateBirth: ':nth-child(1) > .oxd-input-group > :nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-input',
-    genderSelector: ':nth-child(2) > :nth-child(2) > .oxd-radio-wrapper > label > .oxd-radio-input',
-    
-  }
+  it('User Info Update - Success', () => {
+    loginPage.accessLoginPage()
+    loginPage.loginWithAnyUser(userData.userSucess.username, userData.userSucess.password)
 
-  it.only('User Info Update - Success', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSucess.username)
-    cy.get(selectorsList.passwordField).type(userData.userSucess.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
-    cy.get(selectorsList.dashboardGrid)
-    cy.get(selectorsList.myInfoButton).click()
-    cy.get(selectorsList.firstNameField).clear().type('Thamires')
-    cy.get(selectorsList.middleNameField).clear().type('Martins')
-    cy.get(selectorsList.lastNameField).clear().type('Cavalcante')
-    cy.get(selectorsList.employeeIdField).clear().type('Thami')
-    cy.get(selectorsList.otherIdField).clear().type('1904')
-    cy.get(selectorsList.driverLicenseField).clear().type('384125')
-    cy.get(selectorsList.licenseExpireDateField).clear().type('2031-10-03')
-    cy.get(selectorsList.dateCloseButton).click()
-    cy.get(selectorsList.nationalityButton).click()
-    cy.get(':nth-child(27) > span').click()
-    cy.get(selectorsList.maritalStatusButton).click()
-    cy.get('.oxd-select-dropdown > :nth-child(3)').click()
-    cy.get(selectorsList.dateBirth).clear().type('1994-19-10')
-    cy.get(selectorsList.dateCloseButton).click()
-    cy.get(selectorsList.genderSelector).click()
-    cy.get(selectorsList.firstSaveButton).click({force: true})
-    cy.get('body').should('contain', 'Successfully Updated')
-    cy.get('.oxd-toast-close')
+    dashboardPage.checkDashboardPage()
+
+    menuPage.accessMyInfo()
+    
+    myInfoPage.fillPersonalDetails('First Name', 'Middle Name', 'Last Name')
+    myInfoPage.fillEmployeeDetails('Nickname', '1234', '123456', '2031-03-28')
+    myInfoPage.fillStatusDetails('2001-04-19')
+    myInfoPage.saveForm()
 
   })
     it('Login - Fail', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userFail.username)
-    cy.get(selectorsList.passwordField).type(userData.userFail.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.get(selectorsList.wrongCredentialAlert)
+    loginPage.accessLoginPage()
+    loginPage.loginWithAnyUser(userData.userFail.username, userData.userFail.password)
+    loginPage.checkAccessInvalid()
   })
 })
